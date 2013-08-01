@@ -5,5 +5,9 @@ module Cheapskate
       post '/login' => 'cheapskate#login'
       post '/complete_login' => 'cheapskate#complete_login'
     end
+
+    rake_tasks do
+      load 'cheapskate/tasks/cheapskate.rake'
+    end
   end
 end
