@@ -3,77 +3,66 @@ require "cheapskate/engine"
 require "cheapskate/adapter"
 
 module Cheapskate
-  PRODUCTION_HTTP_HOST = ''
-  PRODUCTION_HTTPS_HOST = ''
+  HTTP_PROTOCOL  = 'http'
+  HTTP_HOST      = Rails.env.development? && 'localhost' || nil
+  HTTP_PORT      = Rails.env.development? && 3000 || nil
+  HTTPS_PROTOCOL = Rails.env.development? && 'http' || 'https'
+  HTTPS_HOST     = Rails.env.development? && 'localhost' || nil
+  HTTPS_PORT     = Rails.env.development? && 8000 || nil
 
-  def production_url_options
-    {
-      :http => {
-        :protocol => 'http',
-        :host => PRODUCTION_HTTP_HOST
-      },
+  def self.included(controller)
+    controller.class_eval do
+      before_filter :set_notification
 
-      :https => {
-        :protocol => 'https',
-        :host => PRODUCTION_HTTPS_HOST
-      }
-    }
-  end
-
-  def development_url_options
-    {
-      :http => {
-        :protocol => 'http',
-        :host => 'localhost',
-        :port => 3000
-      },
-
-      :https => {
-        :protocol => 'http',
-        :host => 'localhost',
-        :port => 8000
-      }
-    }
+      def set_notification
+        if params.include?(:notice)
+          
+      end
+    end
   end
 
   def register
-    create_user(params)
-    login()
+    user = create_user(params)
+    login() unless handle_registration?(user)
   end
 
   def login
     user = find_user(params)
     if user.nil?
-      alert('That user does not exist.')
-      return redirect_to(login_path)
+      return alert_and_redirect('That user does not exist.', login_path)
     end
 
     if !authenticate_user(user, params)
-      alert('You have entered an incorrect password.')
-      return redirect_to(login_path)
+      return alert_and_redirect('You have entered an incorrect password.', login_path)
     end
 
     login = create_single_use_login!(user)
-    redirect_to(complete_login_url(url_options_for_protocol(:http), :token => login.token))
+    alert_and_redirect("Welcome, #{user_name(user)}!", complete_login_url(url_options_for_protocol(:http), :token => login.token))
   end
 
   def complete_login
     login = get_single_use_login(params[:token])
     if login.nil?
-      alert('Unable to verify login. Try again?')
-      redirect_to(login_path)
+      alert_and_redirect('Unable to verify login. Try again?', login_path)
     end
 
     login_user(login.user)
-    alert("Welcome, #{user_name(user)}!")
-    redirect_to(root_path)
+    alert_and_redirect("Welcome, #{user_name(user)}!", root_path)
   end
 
   def url_options_for_protocol(protocol)
-    if Rails.env.production?
-      production_url_options()[protocol]
+    if protocol == :https
+      {
+        :protocol => HTTPS_PROTOCOL,
+        :host => HTTPS_HOST,
+        :port => HTTPS_PORT
+      }
     else
-      development_url_options()[protocol]
+      {
+        :protocol => HTTP_PROTOCOL,
+        :host => HTTP_HOST,
+        :port => HTTP_PORT
+      }
     end
   end
 end

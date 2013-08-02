@@ -9,9 +9,17 @@ module Cheapskate
         end
 
         # Methods to override
-        def alert(message)
-          flash[:notice] = message
-        end unless already_defined?(:alert)
+        def alert_and_redirect(message, path)
+          uri = URI(path)
+          if uri.absolute? && uri.host != request.host
+            notice = create_single_use_notice!(message)
+            uri.query = add_to_query(uri.query, :notice => notice.token)
+          else
+            flash[:notice] = message
+          end
+
+          redirect_to(uri.to_s)
+        end unless already_defined?(:alert_and_redirect)
 
         def create_user(params)
           User.create!(params.require(:user).permit(:name, :email, :password, :password_confirmation))
@@ -37,9 +45,25 @@ module Cheapskate
           SingleUseLogin.find_by_token(token)
         end unless already_defined?(:get_single_use_login)
 
+        def create_single_use_notice!(message)
+          SingleUseNotice.create!(:message => message)
+        end unless already_defined?(:create_single_use_notice!)
+
         def login_user(user)
           session[:user_id] = user.id
         end unless already_defined?(:login_user)
+
+        # Callbacks
+        def handle_registration?(user)
+          return false
+        end
+
+        # No need to overrides these
+        def add_to_query(query, parameters)
+          query ||= ''
+          start = query.length > 0 ? '&' : ''
+          query + start + parameters.map { |name, value| "#{URI.escape(name)}=#{URI.escape(value)}" }.join('&')
+        end
       end
     end
   end
