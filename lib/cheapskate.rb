@@ -3,10 +3,6 @@ require "cheapskate/engine"
 require "cheapskate/adapter"
 
 module Cheapskate
-  def self.included(controller)
-    controller.send :include, Cheapskate::Adapter
-  end
-
   PRODUCTION_HTTP_HOST = ''
   PRODUCTION_HTTPS_HOST = ''
 
