@@ -1,6 +1,12 @@
 require "cheapskate/version"
+require "cheapskate/engine"
+require "cheapskate/adapter"
 
 module Cheapskate
+  def self.included(controller)
+    controller.send :include, Cheapskate::Adapter
+  end
+
   PRODUCTION_HTTP_HOST = ''
   PRODUCTION_HTTPS_HOST = ''
 
@@ -42,7 +48,7 @@ module Cheapskate
   def login
     user = find_user(params)
     if user.nil?
-      alert('The specified user name does not exist.')
+      alert('That user does not exist.')
       return redirect_to(login_path)
     end
 
@@ -52,7 +58,7 @@ module Cheapskate
     end
 
     login = create_single_use_login!(user)
-    redirect_to(complete_login_url(url_options(:http), :token => login.token))
+    redirect_to(complete_login_url(url_options_for_protocol(:http), :token => login.token))
   end
 
   def complete_login
@@ -67,44 +73,11 @@ module Cheapskate
     redirect_to(root_path)
   end
 
-  def url_options(protocol)
+  def url_options_for_protocol(protocol)
     if Rails.env.production?
       production_url_options()[protocol]
     else
       development_url_options()[protocol]
     end
-  end
-
-  # Methods to override
-  def alert(message)
-    flash[:notice] = message
-  end
-
-  def create_user(params)
-    User.create!(params.require(:user).permit(:name, :email, :password, :password_confirmation))
-  end
-
-  def find_user(params)
-    User.find_by_email(params[:email])
-  end
-
-  def authenticate_user(user, params)
-    user.authenticate(params)
-  end
-
-  def user_name(user)
-    user.name
-  end
-
-  def create_single_use_login!(user)
-    SingleUseLogin.create!(:user => user)
-  end
-
-  def get_single_use_login(token)
-    SingleUseLogin.find_by_token(token)
-  end
-
-  def login_user(user)
-    session[:user_id] = user.id
   end
 end
