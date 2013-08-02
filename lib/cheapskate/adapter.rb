@@ -3,9 +3,7 @@ module Cheapskate
     def self.included(base)
       base.class_eval do
         def self.already_defined?(method)
-          result = self.instance_methods.include?(method)
-          puts "#{method} already defined in #{self}: #{result}"
-          result
+          self.instance_methods.include?(method)
         end
 
         # Methods to override
@@ -48,6 +46,10 @@ module Cheapskate
         def create_single_use_notice!(message)
           SingleUseNotice.create!(:message => message)
         end unless already_defined?(:create_single_use_notice!)
+
+        def get_single_use_notice(token)
+          SingleUseNotice.find_by_token(token)
+        end unless already_defined?(:get_single_use_notice)
 
         def login_user(user)
           session[:user_id] = user.id

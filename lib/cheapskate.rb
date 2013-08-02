@@ -12,11 +12,15 @@ module Cheapskate
 
   def self.included(controller)
     controller.class_eval do
-      before_filter :set_notification
+      before_filter :check_for_notification
 
-      def set_notification
+      def check_for_notification
         if params.include?(:notice)
-          
+          @notification = get_single_use_notice(params.delete(:notice))
+          flash[:notice] = @notification.get_message_and_destroy!
+
+          redirect_to(request.path, params)
+        end
       end
     end
   end
@@ -46,7 +50,8 @@ module Cheapskate
       alert_and_redirect('Unable to verify login. Try again?', login_path)
     end
 
-    login_user(login.user)
+    user = login.get_user_and_destroy!
+    login_user(user)
     alert_and_redirect("Welcome, #{user_name(user)}!", root_path)
   end
 
