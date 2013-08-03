@@ -56,11 +56,9 @@ module Cheapskate
         end unless already_defined?(:login_user)
 
         # Callbacks
-        def handle_registration?(user)
-          return false
-        end
+        def on_user_created(user); end unless already_defined?(:on_user_created)
 
-        # No need to overrides these
+        # No need to override these
         def add_to_query(query, parameters)
           query ||= ''
           start = query.length > 0 ? '&' : ''

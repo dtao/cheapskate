@@ -27,7 +27,7 @@ module Cheapskate
 
   def register
     user = create_user(params)
-    login() unless handle_registration?(user)
+    on_user_created(user)
   end
 
   def login
