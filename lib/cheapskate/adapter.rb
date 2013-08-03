@@ -3,7 +3,14 @@ module Cheapskate
     def self.included(base)
       base.class_eval do
         def self.already_defined?(method)
-          self.instance_methods.include?(method)
+          if self.instance_methods.include?(method)
+            puts "Method already defined: #{method} - skipping!"
+            return true
+          else
+            puts "Not already defined: #{method}"
+          end
+
+          false
         end
 
         # Methods to override
@@ -28,7 +35,7 @@ module Cheapskate
         end unless already_defined?(:find_user)
 
         def authenticate_user(user, params)
-          user.authenticate(params)
+          user.authenticate(params[:password])
         end unless already_defined?(:authenticate_user)
 
         def user_name(user)

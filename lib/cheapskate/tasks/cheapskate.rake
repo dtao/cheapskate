@@ -1,6 +1,8 @@
 namespace :cheapskate do
-  desc 'Run the necessary migrations to initialize the tables Cheapskate needs'
-  task :setup do
-    # TODO: Take it from here.
+  desc 'Check if everything is set up properly for Cheapskate to work'
+  task :check => :environment do
+    puts "Checking Cheapskate..."
+    puts "#{SingleUseLogin.table_name} doesn't exist!" if !SingleUseLogin.table_exists?
+    puts "#{SingleUseNotice.table_name} doesn't exist!" if !SingleUseNotice.table_exists?
   end
 end

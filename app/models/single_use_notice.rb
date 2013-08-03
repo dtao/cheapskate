@@ -1,6 +1,5 @@
 class SingleUseNotice < ActiveRecord::Base
   validates_presence_of :message
-  validates_presence_of :token
 
   before_create :generate_token
 
