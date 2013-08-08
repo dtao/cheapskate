@@ -31,7 +31,7 @@ module Cheapskate
 
       user = login.get_user_and_destroy!
       login_user(user)
-      alert_and_redirect("Welcome, #{user_name(user)}!", root_path)
+      alert_and_redirect("Welcome, #{user_name(user)}!", app.root_path)
     end
 
     def url_options_for_protocol(protocol)

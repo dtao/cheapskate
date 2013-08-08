@@ -1,3 +1,5 @@
+require 'randy'
+
 class SingleUseLogin < ActiveRecord::Base
   belongs_to :user
 
