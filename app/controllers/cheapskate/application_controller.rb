@@ -38,8 +38,8 @@ module Cheapskate
       end
 
       user = login.get_user_and_destroy!
-      store_user_in_session(user, session)
-      alert_and_redirect("Welcome, #{user_name(user)}!", Cheapskate::ROOT_PATH)
+      @client.store_user_in_session(user, session)
+      alert_and_redirect("Welcome, #{@client.user_name(user)}!", Cheapskate::ROOT_PATH)
     end
 
     protected
