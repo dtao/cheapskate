@@ -10,7 +10,7 @@ module Cheapskate
 
     def register
       user = @client.create_user(params)
-      redirect_to(complete_registration_url(url_options_for_protocol(:http)))
+      redirect_to(registered_url(url_options_for_protocol(:http)))
     end
 
     def complete_registration
@@ -28,7 +28,7 @@ module Cheapskate
       end
 
       login = @client.create_single_use_login!(user)
-      redirect_to(complete_login_url(url_options_for_protocol(:http).merge(:token => login.token)))
+      redirect_to(logged_in_url(url_options_for_protocol(:http).merge(:token => login.token)))
     end
 
     def complete_login
