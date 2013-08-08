@@ -35,8 +35,5 @@ module Cheapskate
     def get_single_use_notice(token)
       SingleUseNotice.find_by_token(token)
     end
-
-    # Callback(s)
-    def on_registration(user); end
   end
 end
