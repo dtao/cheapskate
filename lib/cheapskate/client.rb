@@ -1,17 +1,5 @@
 module Cheapskate
-  module Adapter
-    def alert_and_redirect(message, path)
-      uri = URI(path)
-      if uri.absolute? && uri.host != request.host
-        notice = create_single_use_notice!(message)
-        uri.query = add_to_query(uri.query, :notice => notice.token)
-      else
-        flash[:notice] = message
-      end
-
-      redirect_to(uri.to_s)
-    end
-
+  class Client
     def create_user(params)
       User.create!(params.require(:user).permit(:name, :email, :password, :password_confirmation))
     end
@@ -26,6 +14,10 @@ module Cheapskate
 
     def user_name(user)
       user.name
+    end
+
+    def store_user_in_session(user, session)
+      session[:user_id] = user.id
     end
 
     def create_single_use_login!(user)
@@ -44,18 +36,7 @@ module Cheapskate
       SingleUseNotice.find_by_token(token)
     end
 
-    def login_user(user)
-      session[:user_id] = user.id
-    end
-
-    # Callbacks
-    def on_user_created(user); end
-
-    # No need to override these
-    def add_to_query(query, parameters)
-      query ||= ''
-      start = query.length > 0 ? '&' : ''
-      query + start + parameters.map { |name, value| "#{URI.escape(name)}=#{URI.escape(value)}" }.join('&')
-    end
+    # Callback(s)
+    def on_registration(user); end
   end
 end
