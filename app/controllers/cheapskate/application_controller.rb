@@ -28,7 +28,7 @@ module Cheapskate
       end
 
       login = @client.create_single_use_login!(user)
-      redirect_to(complete_login_url(url_options_for_protocol(:http).merge(:token => login.token))
+      redirect_to(complete_login_url(url_options_for_protocol(:http).merge(:token => login.token)))
     end
 
     def complete_login
