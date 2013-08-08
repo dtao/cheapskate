@@ -1,5 +1,5 @@
 class CreateSingleUseNotices < ActiveRecord::Migration
-  def self.change
+  def change
     create_table :single_use_notices do |t|
       t.string :message
       t.string :token

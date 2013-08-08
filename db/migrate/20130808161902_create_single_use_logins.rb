@@ -1,5 +1,5 @@
 class CreateSingleUseLogins < ActiveRecord::Migration
-  def self.change
+  def change
     create_table :single_use_logins do |t|
       t.integer :user_id
       t.string  :token
