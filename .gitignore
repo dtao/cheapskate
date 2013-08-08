@@ -1,6 +1,8 @@
 Gemfile.lock
 
 .bundle/
+app/assets/
+app/views/
 log/
 pkg/
 test/
