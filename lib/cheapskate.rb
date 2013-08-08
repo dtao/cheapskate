@@ -1,6 +1,4 @@
-require "cheapskate/version"
 require "cheapskate/engine"
-require "cheapskate/adapter"
 
 module Cheapskate
   HTTP_PROTOCOL  = 'http'

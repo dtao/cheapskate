@@ -1,5 +1,5 @@
-Rails.application.routes.draw do
-  post '/register' => 'cheapskate#register'
-  post '/login' => 'cheapskate#login'
-  get '/complete_login' => 'cheapskate#complete_login'
+Cheapskate::Engine.routes.draw do
+  post 'register' => 'application#register'
+  post 'login' => 'application#login'
+  get 'complete_login' => 'application#complete_login'
 end

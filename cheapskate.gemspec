@@ -1,23 +1,21 @@
-# coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'cheapskate/version'
+$:.push File.expand_path("../lib", __FILE__)
 
-Gem::Specification.new do |spec|
-  spec.name          = "cheapskate"
-  spec.version       = Cheapskate::VERSION
-  spec.authors       = ["Dan Tao"]
-  spec.email         = ["daniel.tao@gmail.com"]
-  spec.description   = %q{Seamlessly jump to a separate domain for HTTPS login and then back}
-  spec.summary       = %q{HTTPS login from a separate domain}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+# Maintain your gem's version:
+require "cheapskate/version"
 
-  spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  spec.require_paths = ["lib"]
+# Describe your gem and declare its dependencies:
+Gem::Specification.new do |s|
+  s.name        = "cheapskate"
+  s.version     = Cheapskate::VERSION
+  s.authors     = ["Dan Tao"]
+  s.email       = ["daniel.tao@gmail.com"]
+  s.homepage    = ""
+  s.summary     = "Seamlessly jump to a separate domain for HTTPS login and then back"
+  s.description = "HTTPS login from a separate domain"
 
-  spec.add_dependency "rails"
-  spec.add_dependency "randy"
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  s.test_files = Dir["test/**/*"]
+
+  s.add_dependency "rails", "~> 4.0.0"
+  s.add_dependency "randy"
 end
