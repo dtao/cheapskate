@@ -9,9 +9,10 @@ Gem::Specification.new do |s|
   s.version     = Cheapskate::VERSION
   s.authors     = ["Dan Tao"]
   s.email       = ["daniel.tao@gmail.com"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/dtao/cheapskate"
   s.summary     = "Seamlessly jump to a separate domain for HTTPS login and then back"
   s.description = "HTTPS login from a separate domain"
+  s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
