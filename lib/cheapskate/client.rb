@@ -19,21 +19,5 @@ module Cheapskate
     def store_user_in_session(user, session)
       session[:user_id] = user.id
     end
-
-    def create_single_use_login!(user)
-      SingleUseLogin.create!(:user => user)
-    end
-
-    def get_single_use_login(token)
-      SingleUseLogin.find_by_token(token)
-    end
-
-    def create_single_use_notice!(message)
-      SingleUseNotice.create!(:message => message)
-    end
-
-    def get_single_use_notice(token)
-      SingleUseNotice.find_by_token(token)
-    end
   end
 end

@@ -27,12 +27,12 @@ module Cheapskate
         return alert_and_redirect('You have entered an incorrect password.', login_path)
       end
 
-      login = @client.create_single_use_login!(user)
+      login = SingleUseLogin.create!(:user => user)
       redirect_to(logged_in_url(url_options_for_protocol(:http).merge(:token => login.token)))
     end
 
     def complete_login
-      login = @client.get_single_use_login(params[:token])
+      login = SingleUseLogin.find_by_token(params[:token])
       if login.nil?
         alert_and_redirect('Unable to verify login. Try again?', login_path)
       end
@@ -47,7 +47,7 @@ module Cheapskate
     def alert_and_redirect(message, path)
       uri = URI(path)
       if uri.absolute? && uri.host != request.host
-        notice = @client.create_single_use_notice!(message)
+        notice = SingleUseNotice.create!(:message => message)
         uri.query = add_to_query(uri.query, :notice => notice.token)
       else
         flash[:notice] = message
@@ -75,7 +75,7 @@ module Cheapskate
 
     def check_for_notification
       if params.include?(:notice)
-        @notification = get_single_use_notice(params.delete(:notice))
+        @notification = SingleUseNotice.find_by_token(params.delete(:notice))
         flash[:notice] = @notification.get_message_and_destroy!
 
         redirect_to(request.path, params)
