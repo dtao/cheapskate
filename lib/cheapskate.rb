@@ -1,6 +1,3 @@
-require "cheapskate/client"
-require "cheapskate/engine"
-
 module Cheapskate
   CONFIG = {
     'HTTP_PROTOCOL'  => 'http',
@@ -11,7 +8,10 @@ module Cheapskate
     'HTTPS_HOST'     => Rails.env.development? && 'localhost' || nil,
     'HTTPS_PORT'     => Rails.env.development? && 8000 || nil,
 
-    'CLIENT_CLASS'   => Cheapskate::Client,
     'ROOT_PATH'      => '/'
   }
 end
+
+require "cheapskate/client"
+require "cheapskate/client/default"
+require "cheapskate/engine"

@@ -20,11 +20,11 @@ module Cheapskate
     def login
       user = @client.find_user(params)
       if user.nil?
-        return alert_and_redirect('That user does not exist.', login_path)
+        return alert_and_redirect('That user does not exist.', login_path, :error)
       end
 
       if !@client.authenticate_user(user, params)
-        return alert_and_redirect('You have entered an incorrect password.', login_path)
+        return alert_and_redirect('You have entered an incorrect password.', login_path, :error)
       end
 
       login = SingleUseLogin.create!(:user => user)
@@ -34,7 +34,7 @@ module Cheapskate
     def complete_login
       login = SingleUseLogin.find_by_token(params[:token])
       if login.nil?
-        alert_and_redirect('Unable to verify login. Try again?', login_path)
+        alert_and_redirect('Unable to verify login. Try again?', login_path, :error)
       end
 
       user = login.get_user_and_destroy!
@@ -44,13 +44,13 @@ module Cheapskate
 
     protected
 
-    def alert_and_redirect(message, path)
+    def alert_and_redirect(message, path, alert_type=:notice)
       uri = URI(path)
       if uri.absolute? && uri.host != request.host
         notice = SingleUseNotice.create!(:message => message)
         uri.query = add_to_query(uri.query, :notice => notice.token)
       else
-        flash[:notice] = message
+        @client.send(:"alert_#{alert_type}", self, message)
       end
 
       logger.info("CHEAPSKATE - Redirecting...")
@@ -76,7 +76,7 @@ module Cheapskate
     def check_for_notification
       if params.include?(:notice)
         @notification = SingleUseNotice.find_by_token(params.delete(:notice))
-        flash[:notice] = @notification.get_message_and_destroy!
+        @client.alert_notice(self, @notification.get_message_and_destroy!)
 
         redirect_to(request.path, params)
       end
