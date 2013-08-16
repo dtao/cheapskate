@@ -14,7 +14,7 @@ module Cheapskate
     end
 
     def complete_registration
-      alert_and_redirect("Thank you for registering.", Cheapskate::ROOT_PATH)
+      alert_and_redirect("Thank you for registering.", Cheapskate::CONFIG['ROOT_PATH'])
     end
 
     def login
@@ -39,7 +39,7 @@ module Cheapskate
 
       user = login.get_user_and_destroy!
       @client.store_user_in_session(user, session)
-      alert_and_redirect("Welcome, #{@client.user_name(user)}!", Cheapskate::ROOT_PATH)
+      alert_and_redirect("Welcome, #{@client.user_name(user)}!", Cheapskate::CONFIG['ROOT_PATH'])
     end
 
     protected
@@ -70,7 +70,7 @@ module Cheapskate
     private
 
     def initialize_client
-      @client = Cheapskate::CLIENT_CLASS.new
+      @client = Cheapskate::CONFIG['CLIENT_CLASS'].new
     end
 
     def check_for_notification

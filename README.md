@@ -29,8 +29,8 @@ The gem provides its own Rails engine, which adds the following to your app:
 
 ### Customization
 
-Both the **/logged_in** and **/registered** routes redirect back to `Cheapskate::ROOT_PATH`, which
-defaults to `"/"`.
+Both the **/logged_in** and **/registered** routes redirect back to `Cheapskate::CONFIG['ROOT_PATH']`,
+which defaults to `"/"`.
 
 Internally much of the logic where the gem hooks into your application is found in the
 `Cheapskate::Client` class. You can inherit from this class and override any of these methods if you
@@ -42,5 +42,5 @@ want:
 - `user_name(user)`
 - `store_user_in_session(user, session)`
 
-If you implement your own client, then you must set the `Cheapskate::CLIENT_CLASS` constant
-accordingly. (Yeah, I know that's bad. Will think more on this.)
+If you implement your own client, then you must set the `Cheapskate::CONFIG['CLIENT_CLASS']` setting
+accordingly.
